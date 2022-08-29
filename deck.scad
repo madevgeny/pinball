@@ -1,47 +1,58 @@
 $fs=0.1;
 
-height = 20;
-depth = 4;
-width = 12;
+ball_radius = 0.4;
+WIDTH = 12;
+HEIGHT = 20;
+DEPTH = 4;
 
-start = -width / 2;
 
-height_small = 5;
+sphere(r = ball_radius, $fs=0.1);
 
-thick = 0.5;
-
-sep_thick = 0.25;
-sphere_radius = 0.4;
-pin_radius = 0.1;
-
-two_pokets = [
-[0, 0, (height_small - height) / 2]
-];
-
-four_pokets = [
-[0, 0, (height_small - height) / 2],
-[start + 3 - sep_thick/2, 0, (height_small - height) / 2],
-[-start - 3 + sep_thick/2, 0, (height_small - height) / 2],
-
-];
-
-sphere(r = sphere_radius, $fs=0.1);
-
-union(){
-	difference () {
-		cube([width + 2 * thick, depth, height + 2 * thick], center = true);
-		translate([0, thick, 0]) 
+module Box(width, height, depth){
+    thikness = 0.5;   
+    difference () {
+		cube([width + 2 * thikness, depth, height + 2 * thikness], center = true);
+		translate([0, thikness, 0]) 
 			cube([width, depth, height], center = true);
 	}
-	
-	for (a = four_pokets)
-		translate(a)
-			cube([sep_thick, depth, height_small], center = true);
-
-	
 }
 
+module Pokets(box_width){
+    start = -12 / 2;
+    height = 5;
+    thikness = 0.25;
+    
+    two_pokets = [
+        [0, 0, height]
+    ];
 
-rotate(a=90, v=[1,0,0]) { 
+    four_pokets = [
+        [0, 0, height],
+        [start + 3 - thikness/2, 0, height],
+        [-start - 3 + thikness/2, 0, height],
+    ];
+    
+    for (a = four_pokets)
+		translate(a)
+			cube([thikness, depth, height], center = true);
+}
+
+module Pins(){
+    pin_radius = 0.1;
+    
+    rotate(a=90, v=[1,0,0]) { 
 	cylinder(h=depth, r=pin_radius, center=true);
 }
+}
+
+union(){
+    Box(WIDTH, HEIGHT, DEPTH);
+	Pokets(WIDTH);
+	Pins();
+	
+
+	
+}
+
+
+
